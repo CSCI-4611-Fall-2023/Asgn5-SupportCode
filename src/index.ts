@@ -1,9 +1,9 @@
-/** CSci-4611 Example Code
- * Copyright 2023+ Regents of the University of Minnesota
- * Please do not distribute beyond the CSci-4611 course
- */
+// CSCI 4611 Assignment 5: Artistic Rendering
+// You only need to modify the shaders for this assignment.
+// You do not need to write any TypeScript code unless
+// you are planning to add wizard functionality.
 
-import { ExampleApp } from './ExampleApp'
+import { MeshViewer } from './MeshViewer'
 
-const app = new ExampleApp();
-app.start();
+const meshViewer = new MeshViewer();
+meshViewer.start();

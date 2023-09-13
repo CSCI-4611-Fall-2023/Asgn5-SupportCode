@@ -1,9 +1,9 @@
 {
-  "name": "example-app",
+  "name": "assignment-5",
   "version": "1.0.0",
-  "description": "GopherGfx Example App",
-  "author": "UMN CSci-4611 Instructors <csci4611@umn.edu>",
-  "license": "",
+  "description": "Assignment 5, CSCI 4611, Spring 2023",
+  "author": "Evan Suma Rosenberg <suma@umn.edu>",
+  "license": "CC BY-NC-SA 4.0",
   "type": "module",
   "devDependencies": {
     "@gltf-transform/core": "^3.5.1",
@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "vite",
     "start": "vite",
-    "build": "vite build && javascript-obfuscator ./dist/index.js --output ./dist/index.js --simplify false",
+    "build": "vite build && javascript-obfuscator ./dist/index.js --output ./dist/index.js --simplify false --string-array true --split-strings true --split-strings-chunk-length 5 --string-array-threshold 1",
     "preview": "vite preview"
   }
 }
