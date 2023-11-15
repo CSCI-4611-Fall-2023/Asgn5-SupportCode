@@ -14,6 +14,8 @@ import { GUI } from 'dat.gui'
 import { ToonMaterial } from './ToonMaterial';
 import { OutlineMaterial } from './OutlineMaterial';
 import { NormalMapMaterial } from './NormalMapMaterial';
+import { MyGouraudMaterial } from './MyGouraudMaterial';
+import { MyPhongMaterial } from './MyPhongMaterial';
 
 export class MeshViewer extends gfx.GfxApp
 {
@@ -25,8 +27,8 @@ export class MeshViewer extends gfx.GfxApp
 
     private models: gfx.Mesh3[];
 
-    private gouradMaterial: gfx.GouraudMaterial;
-    private phongMaterial: gfx.PhongMaterial;
+    private gouradMaterial: MyGouraudMaterial;
+    private phongMaterial: MyPhongMaterial;
     private unlitMaterial: gfx.UnlitMaterial;
     private wireframeMaterial: gfx.WireframeMaterial;
     private toonMaterial: ToonMaterial;
@@ -57,8 +59,8 @@ export class MeshViewer extends gfx.GfxApp
         
         this.models = [];
 
-        this.gouradMaterial = new gfx.GouraudMaterial();
-        this.phongMaterial = new gfx.PhongMaterial();
+        this.gouradMaterial = new MyGouraudMaterial();
+        this.phongMaterial = new MyPhongMaterial();
         this.unlitMaterial = new gfx.UnlitMaterial();
         this.wireframeMaterial = new gfx.WireframeMaterial();
         this.normalMapMaterial = new NormalMapMaterial();
