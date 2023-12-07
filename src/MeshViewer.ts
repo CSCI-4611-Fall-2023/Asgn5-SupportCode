@@ -21,7 +21,6 @@ export class MeshViewer extends gfx.GfxApp
 {
     private cameraControls: gfx.OrbitControls;
     public renderStyle: string;
-    public toonOutlineThickness: number;
     public model: string;
     public texture: string;
     public lightType: string;
@@ -53,8 +52,7 @@ export class MeshViewer extends gfx.GfxApp
 
         this.cameraControls = new gfx.OrbitControls(this.camera);
 
-        this.renderStyle = 'Wireframe';
-        this.toonOutlineThickness = 0.01;
+        this.renderStyle = 'Gouraud';
         this.model = 'bunny.obj';
         this.texture = 'None';
         this.lightType = 'Point Light';
@@ -72,12 +70,9 @@ export class MeshViewer extends gfx.GfxApp
         // within the outline material.
         this.toonMaterial = new ToonMaterial(
             new gfx.Texture('./assets/ramps/toonDiffuse.png'),
-            new gfx.Texture('./assets/ramps/toonSpecular.png')
-            //new gfx.Texture('./assets/ramps/standardDiffuse.png'),
-            //new gfx.Texture('./assets/ramps/standardSpecular.png')
+            new gfx.Texture('./assets/ramps/toonSpecular.png'),
         );
         this.outlineMaterial = new OutlineMaterial(this.toonMaterial);
-        this.outlineMaterial.thickness = this.toonOutlineThickness;
 
         this.gravelTexture = new gfx.Texture('./assets/textures/Gravel_001_BaseColor.jpg');
         this.gravelNormalMap = new gfx.Texture('./assets/textures/Gravel_001_Normal.jpg');
@@ -104,22 +99,15 @@ export class MeshViewer extends gfx.GfxApp
         renderControls.open();
 
         const renderStyleController = renderControls.add(this, 'renderStyle', [
-            'Wireframe',
-            'Unlit',
             'Gouraud', 
             'Phong', 
             'Toon',
-            'Normal Map'
+            'Normal Map',
+            'Unlit',
+            'Wireframe'
         ]);
         renderStyleController.name('');
         renderStyleController.onChange(()=>{this.changeRenderStyle()});
-
-        const toonControls = gui.addFolder('Toon Options');
-        toonControls.open();
-        toonControls.add(this, 'toonOutlineThickness')
-            .min(0)
-            .max(0.05)
-            .onChange(()=>{ this.outlineMaterial.thickness = this.toonOutlineThickness; });
 
         const modelControls = gui.addFolder('Model');
         modelControls.open();
@@ -194,6 +182,7 @@ export class MeshViewer extends gfx.GfxApp
         // Set the initial material colors and texture
         this.changeTexture();
 
+        this.outlineMaterial.thickness = 0.02;
         this.outlineMaterial.color.set(0, 0, 0);
 
         this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/bunny.obj'));
@@ -211,9 +200,7 @@ export class MeshViewer extends gfx.GfxApp
         });
 
         this.models[0].visible = true;
-        this.changeRenderStyle();
     }
-
     update(deltaTime: number): void 
     {
         // Nothing to implement here for this assignment
