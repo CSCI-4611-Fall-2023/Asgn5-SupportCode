@@ -48,14 +48,14 @@ out vec4 fragColor;
 
 void main() 
 {
-    vec3 n; 
+    vec3 normal; 
     // If we have not loaded a normal map
     if(useNormalMap == 0)
     {
         // In tangent space, the surface normal of the triangle
         // is (0, 0, 1).  This will therefore produce the same
         // result as a Phong shader.
-        n = vec3(0, 0, 1);
+        normal = vec3(0, 0, 1);
     }
     // If normal mapping has been activated
     else
@@ -65,7 +65,7 @@ void main()
         // should obtain the displaced normal from the normal map.
         // This normal will be in the range [0, 1].  You will then
         // need to convert it to be in the range [-1, 1].
-        n = vec3(0, 0, 1);
+        normal = vec3(0, 0, 1);
     }
 
     vec3 illumination = vec3(0, 0, 0);
@@ -82,14 +82,14 @@ void main()
             l = normalize(tangentLightPositions[i] - tangentVertPosition);
 
         // Diffuse component
-        float diffuseComponent = max(dot(n, l), 0.0);
+        float diffuseComponent = max(dot(normal, l), 0.0);
         illumination += diffuseComponent * kDiffuse * diffuseIntensities[i];
 
         // Compute the vector from the vertex to the eye
         vec3 e = normalize(tangentEyePosition - tangentVertPosition);
 
         // Compute the light vector reflected about the normal
-        vec3 r = reflect(-l, n);
+        vec3 r = reflect(-l, normal);
 
         // Specular component
         float specularComponent = pow(max(dot(e, r), 0.0), shininess);
