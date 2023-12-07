@@ -21,6 +21,7 @@ export class MeshViewer extends gfx.GfxApp
 {
     private cameraControls: gfx.OrbitControls;
     public renderStyle: string;
+    public toonOutlineThickness: number;
     public model: string;
     public texture: string;
     public lightType: string;
@@ -52,7 +53,8 @@ export class MeshViewer extends gfx.GfxApp
 
         this.cameraControls = new gfx.OrbitControls(this.camera);
 
-        this.renderStyle = 'Gouraud';
+        this.renderStyle = 'Wireframe';
+        this.toonOutlineThickness = 0.01;
         this.model = 'bunny.obj';
         this.texture = 'None';
         this.lightType = 'Point Light';
@@ -70,9 +72,12 @@ export class MeshViewer extends gfx.GfxApp
         // within the outline material.
         this.toonMaterial = new ToonMaterial(
             new gfx.Texture('./assets/ramps/toonDiffuse.png'),
-            new gfx.Texture('./assets/ramps/toonSpecular.png'),
+            new gfx.Texture('./assets/ramps/toonSpecular.png')
+            //new gfx.Texture('./assets/ramps/standardDiffuse.png'),
+            //new gfx.Texture('./assets/ramps/standardSpecular.png')
         );
         this.outlineMaterial = new OutlineMaterial(this.toonMaterial);
+        this.outlineMaterial.thickness = this.toonOutlineThickness;
 
         this.gravelTexture = new gfx.Texture('./assets/textures/Gravel_001_BaseColor.jpg');
         this.gravelNormalMap = new gfx.Texture('./assets/textures/Gravel_001_Normal.jpg');
@@ -99,15 +104,22 @@ export class MeshViewer extends gfx.GfxApp
         renderControls.open();
 
         const renderStyleController = renderControls.add(this, 'renderStyle', [
+            'Wireframe',
+            'Unlit',
             'Gouraud', 
             'Phong', 
             'Toon',
-            'Normal Map',
-            'Unlit',
-            'Wireframe'
+            'Normal Map'
         ]);
         renderStyleController.name('');
         renderStyleController.onChange(()=>{this.changeRenderStyle()});
+
+        const toonControls = gui.addFolder('Toon Options');
+        toonControls.open();
+        toonControls.add(this, 'toonOutlineThickness')
+            .min(0)
+            .max(0.05)
+            .onChange(()=>{ this.outlineMaterial.thickness = this.toonOutlineThickness; });
 
         const modelControls = gui.addFolder('Model');
         modelControls.open();
@@ -118,7 +130,7 @@ export class MeshViewer extends gfx.GfxApp
             'cube.obj', 
             'head.obj',
             'hippo.obj',
-            'sphere.obj',
+            'sphere.obj (non-uniform)',
             'teapot.obj'
         ]);
         modelController.name('');
@@ -182,15 +194,17 @@ export class MeshViewer extends gfx.GfxApp
         // Set the initial material colors and texture
         this.changeTexture();
 
-        this.outlineMaterial.thickness = 0.02;
         this.outlineMaterial.color.set(0, 0, 0);
+
+        const nonUniformSphere = gfx.MeshLoader.loadOBJ('./assets/models/sphere.obj');
+        nonUniformSphere.scale.set(0.87, 1.05, 1.13);
 
         this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/bunny.obj'));
         this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/cow.obj'));
         this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/cube.obj'));
         this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/head.obj'));
         this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/hippo.obj'));
-        this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/sphere.obj'));
+        this.models.push(nonUniformSphere);
         this.models.push(gfx.MeshLoader.loadOBJ('./assets/models/teapot.obj'));
 
         this.models.forEach((model: gfx.Mesh3) => {
@@ -200,7 +214,9 @@ export class MeshViewer extends gfx.GfxApp
         });
 
         this.models[0].visible = true;
+        this.changeRenderStyle();
     }
+
     update(deltaTime: number): void 
     {
         // Nothing to implement here for this assignment
@@ -289,7 +305,7 @@ export class MeshViewer extends gfx.GfxApp
             this.models[4].visible = true;
             this.setMaterialSide(gfx.Side.FRONT);
         }
-        else if(this.model == 'sphere.obj')
+        else if(this.model == 'sphere.obj (non-uniform)')
         {
             this.models.forEach((model: gfx.Mesh3) => {
                 model.visible = false;
